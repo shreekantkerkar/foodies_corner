@@ -1,12 +1,14 @@
 import RestaurantCard, { withOpenLabel } from "./RestaurantCard";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import Shimmer from "./Shimmer";  // Import your Shimmer component
 
 const Body = () => {
   // State variables
   const [restaurantList, setRestaurantList] = useState([]);
   const [filteredList, setFilteredList] = useState([]);
   const [searchText, setSearchText] = useState("");
+  const [loading, setLoading] = useState(true); // New state for loading
 
   // Higher-order component
   const RestaurantCardPromoted = withOpenLabel(RestaurantCard);
@@ -32,6 +34,8 @@ const Body = () => {
       setFilteredList(restaurants);
     } catch (error) {
       console.error("Failed to fetch data:", error);
+    } finally {
+      setLoading(false); // Set loading to false after data fetch is complete
     }
   };
 
@@ -88,19 +92,25 @@ const Body = () => {
           </button>
         </div>
       </div>
+
+      {/* Conditionally render Shimmer or the restaurant list */}
       <div className="flex flex-wrap justify-center items-center">
-        {filteredList.map((restaurant) => (
-          <Link
-            to={`/restaurants/${restaurant.info.id}`}
-            key={restaurant.info.id}
-          >
-            {restaurant.info.isOpen ? (
-              <RestaurantCardPromoted resData={restaurant} />
-            ) : (
-              <RestaurantCard resData={restaurant} />
-            )}
-          </Link>
-        ))}
+        {loading ? (
+          <Shimmer /> // Render Shimmer component while data is loading
+        ) : (
+          filteredList.map((restaurant) => (
+            <Link
+              to={`/restaurants/${restaurant.info.id}`}
+              key={restaurant.info.id}
+            >
+              {restaurant.info.isOpen ? (
+                <RestaurantCardPromoted resData={restaurant} />
+              ) : (
+                <RestaurantCard resData={restaurant} />
+              )}
+            </Link>
+          ))
+        )}
       </div>
     </div>
   );
