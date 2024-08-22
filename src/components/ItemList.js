@@ -42,6 +42,7 @@ const ItemList = ({ items }) => {
             </div>
             <img
               src={CDN_URL + item.card.info.imageId}
+              alt={item.card.info.name}
               className="w-full rounded-md "
             />
           </div>
