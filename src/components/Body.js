@@ -1,28 +1,25 @@
 import RestaurantCard, { withOpenLabel } from "./RestaurantCard";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Shimmer from "./Shimmer";  // Import your Shimmer component
+import Shimmer from "./Shimmer";
 
 const Body = () => {
-  // State variables
   const [restaurantList, setRestaurantList] = useState([]);
   const [filteredList, setFilteredList] = useState([]);
   const [searchText, setSearchText] = useState("");
-  const [loading, setLoading] = useState(true); // New state for loading
+  const [loading, setLoading] = useState(true);
 
-  // Higher-order component
   const RestaurantCardPromoted = withOpenLabel(RestaurantCard);
 
-  // Fetch data on component mount
   useEffect(() => {
     fetchData();
   }, []);
 
-  // Fetch data from API
+  
   const fetchData = async () => {
     try {
       const response = await fetch(
-        "https://www.swiggy.com/dapi/restaurants/list/v5?lat=18.5204303&lng=73.8567437&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
+        "/dapi/restaurants/list/v5?lat=18.5204303&lng=73.8567437&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
       );
       const data = await response.json();
       console.log(data);
@@ -35,11 +32,10 @@ const Body = () => {
     } catch (error) {
       console.error("Failed to fetch data:", error);
     } finally {
-      setLoading(false); // Set loading to false after data fetch is complete
+      setLoading(false);
     }
   };
 
-  // Handle search input change
   const handleSearchChange = (e) => {
     const text = e.target.value;
     setSearchText(text);
@@ -50,7 +46,7 @@ const Body = () => {
     setFilteredList(filteredRes);
   };
 
-  // Handle search button click
+  
   const handleSearchClick = () => {
     const filteredRes = restaurantList.filter((res) =>
       res.info.name.toLowerCase().includes(searchText.toLowerCase())
@@ -58,7 +54,6 @@ const Body = () => {
     setFilteredList(filteredRes);
   };
 
-  // Handle top-rated button click
   const handleTopRatedClick = () => {
     const topRated = restaurantList.filter((res) => res.info.avgRating > 4.5);
     setFilteredList(topRated);
@@ -93,10 +88,9 @@ const Body = () => {
         </div>
       </div>
 
-      {/* Conditionally render Shimmer or the restaurant list */}
       <div className="flex flex-wrap justify-center items-center">
         {loading ? (
-          <Shimmer /> // Render Shimmer component while data is loading
+          <Shimmer /> 
         ) : (
           filteredList.map((restaurant) => (
             <Link
